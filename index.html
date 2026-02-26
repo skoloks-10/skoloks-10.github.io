@@ -1,169 +1,563 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Git 소개 및 사용법</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1, h2, h3 {
-            color: #0056b3;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        h2 {
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            margin-top: 30px;
-        }
-        code {
-            background-color: #eef;
-            padding: 2px 4px;
-            border-radius: 4px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            color: #c7254e;
-        }
-        pre {
-            background-color: #eef;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-            font-family: 'Consolas', 'Monaco', monospace;
-            color: #333;
-        }
-        ul {
-            list-style-type: disc;
-            margin-left: 20px;
-        }
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Git 가이드 – 소개 · 설치 · 사용법</title>
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 70px; }
+    body {
+      font-family: 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      color: #222; background: #f6f8fa; line-height: 1.75;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; }
+
+    /* ===== Header / Nav ===== */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      box-shadow: 0 2px 12px rgba(0,0,0,.35);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 62px;
+    }
+    .logo {
+      font-size: 1.35rem; font-weight: 800; color: #fff;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .logo svg { width: 28px; height: 28px; fill: #f0883e; }
+    nav a {
+      color: #cdd9e5; font-size: .92rem; margin-left: 26px;
+      transition: color .2s;
+    }
+    nav a:hover { color: #f0883e; }
+
+    /* ===== Hero ===== */
+    .hero {
+      background: linear-gradient(135deg, #0d1117 0%, #1a2233 60%, #0d1117 100%);
+      color: #fff; text-align: center;
+      padding: 100px 24px 90px;
+    }
+    .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 18px; }
+    .hero h1 span { color: #f0883e; }
+    .hero p { max-width: 640px; margin: 0 auto 32px; color: #a1aab5; font-size: 1.12rem; }
+    .btn {
+      display: inline-block; padding: 14px 36px; border-radius: 8px;
+      font-weight: 700; font-size: 1rem; transition: transform .2s, box-shadow .2s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.3); }
+    .btn-primary { background: #f0883e; color: #fff; }
+    .btn-outline { border: 2px solid #f0883e; color: #f0883e; margin-left: 12px; }
+
+    /* ===== Section common ===== */
+    section { padding: 80px 24px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-title {
+      font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 12px;
+    }
+    .section-sub {
+      text-align: center; color: #666; max-width: 600px; margin: 0 auto 48px;
+    }
+
+    /* ===== About (카드) ===== */
+    .about-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+    }
+    .card {
+      background: #fff; border-radius: 14px; padding: 36px 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      transition: transform .25s, box-shadow .25s;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,.1); }
+    .card-icon {
+      width: 52px; height: 52px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; margin-bottom: 18px; color: #fff;
+    }
+    .card h3 { font-size: 1.18rem; margin-bottom: 8px; }
+    .card p { color: #555; font-size: .95rem; }
+    .bg-orange { background: #f0883e; }
+    .bg-blue   { background: #1f6feb; }
+    .bg-green  { background: #238636; }
+    .bg-purple { background: #8957e5; }
+
+    /* ===== Install ===== */
+    #install { background: #fff; }
+    .install-tabs {
+      display: flex; justify-content: center; gap: 12px; margin-bottom: 36px; flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 10px 28px; border-radius: 8px; border: 2px solid #d0d7de;
+      background: transparent; font-size: .95rem; font-weight: 600;
+      cursor: pointer; transition: all .2s; color: #444;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: #0d1117; color: #fff; border-color: #0d1117;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .install-card {
+      background: #f6f8fa; border-radius: 14px; padding: 36px;
+      max-width: 750px; margin: 0 auto;
+    }
+    .install-card h3 { margin-bottom: 14px; font-size: 1.15rem; }
+    .install-card ol { padding-left: 22px; }
+    .install-card li { margin-bottom: 10px; color: #444; }
+    .install-card a { color: #1f6feb; text-decoration: underline; }
+
+    /* ===== Code blocks ===== */
+    pre {
+      background: #0d1117; color: #e6edf3; padding: 18px 22px;
+      border-radius: 10px; overflow-x: auto; font-size: .92rem;
+      margin: 14px 0 20px; line-height: 1.65; position: relative;
+    }
+    pre .comment { color: #8b949e; }
+    code { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; }
+    .copy-btn {
+      position: absolute; top: 10px; right: 10px;
+      background: #21262d; border: 1px solid #30363d; color: #cdd9e5;
+      padding: 4px 10px; border-radius: 6px; font-size: .78rem;
+      cursor: pointer; transition: background .2s;
+    }
+    .copy-btn:hover { background: #30363d; }
+
+    /* ===== Usage ===== */
+    .usage-block { margin-bottom: 48px; }
+    .usage-block h3 {
+      font-size: 1.25rem; margin-bottom: 6px;
+      padding-left: 14px; border-left: 4px solid #f0883e;
+    }
+    .usage-block > p { color: #555; margin-bottom: 10px; }
+
+    /* ===== Cheatsheet table ===== */
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%; border-collapse: collapse; background: #fff;
+      border-radius: 12px; overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    }
+    th, td { padding: 14px 18px; text-align: left; }
+    th { background: #0d1117; color: #fff; font-weight: 600; font-size: .92rem; }
+    td { border-bottom: 1px solid #eaecef; font-size: .92rem; }
+    td code { background: #f0f3f6; padding: 2px 8px; border-radius: 5px; font-size: .88rem; color: #0d1117; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f6f8fa; }
+
+    /* ===== Workflow ===== */
+    .workflow {
+      display: flex; align-items: flex-start; gap: 0;
+      justify-content: center; flex-wrap: wrap; margin-top: 36px;
+    }
+    .wf-step { text-align: center; width: 150px; }
+    .wf-circle {
+      width: 68px; height: 68px; border-radius: 50%;
+      background: #0d1117; color: #f0883e;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: 800; margin: 0 auto 10px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.15);
+    }
+    .wf-step p { font-size: .85rem; color: #555; }
+    .wf-step strong { display: block; font-size: .95rem; margin-bottom: 2px; }
+    .wf-arrow {
+      display: flex; align-items: center; padding-top: 18px;
+      color: #bbb; font-size: 1.5rem;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      background: #0d1117; color: #555; text-align: center;
+      padding: 32px 24px; font-size: .88rem;
+    }
+    footer a { color: #f0883e; }
+
+    /* ===== Back-to-top ===== */
+    #topBtn {
+      position: fixed; bottom: 30px; right: 30px;
+      width: 46px; height: 46px; border-radius: 50%;
+      background: #f0883e; color: #fff; border: none;
+      font-size: 1.3rem; cursor: pointer;
+      display: none; box-shadow: 0 4px 14px rgba(0,0,0,.25);
+      transition: transform .2s;
+    }
+    #topBtn:hover { transform: scale(1.1); }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 700px) {
+      .hero h1 { font-size: 2rem; }
+      .nav-inner { flex-direction: column; height: auto; padding: 14px 20px; gap: 8px; }
+      nav a { margin-left: 12px; }
+      .wf-arrow { display: none; }
+      .workflow { gap: 18px; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Git 소개 및 사용법</h1>
 
-        <section id="introduction">
-            <h2>1. Git이란?</h2>
-            <p>Git은 <strong>분산 버전 관리 시스템(Distributed Version Control System, DVCS)</strong>입니다. 소프트웨어 개발 프로젝트의 소스 코드 변경 사항을 추적하고, 여러 개발자들이 동시에 협업할 수 있도록 돕는 도구입니다.</p>
-            <h3>주요 특징:</h3>
-            <ul>
-                <li><strong>분산형 구조:</strong> 중앙 서버 없이 각 개발자의 로컬 저장소에 전체 프로젝트 히스토리가 저장됩니다. 이는 네트워크 연결 없이도 작업이 가능하며, 중앙 서버 장애 시에도 데이터 손실 위험이 적다는 장점이 있습니다.</li>
-                <li><strong>빠른 성능:</strong> 대부분의 작업이 로컬에서 이루어지므로 매우 빠릅니다.</li>
-                <li><strong>강력한 브랜칭 및 머징:</strong> 쉽고 빠르게 브랜치를 생성하고 병합할 수 있어 다양한 실험과 기능 개발이 용이합니다.</li>
-                <li><strong>데이터 무결성:</strong> 모든 데이터는 SHA-1 해시로 암호화되어 저장되므로, 데이터 손상으로부터 안전합니다.</li>
-            </ul>
-        </section>
-
-        <section id="installation">
-            <h2>2. Git 설치</h2>
-            <p>운영체제에 맞는 Git을 설치하는 방법을 안내합니다.</p>
-
-            <h3>Windows</h3>
-            <p>공식 웹사이트에서 설치 파일을 다운로드하여 설치합니다.</p>
-            <ul>
-                <li><a href="https://git-scm.com/download/win" target="_blank">Git for Windows 다운로드</a></li>
-            </ul>
-            <p>설치 시 특별한 설정 변경 없이 기본 옵션으로 진행해도 무방합니다.</p>
-
-            <h3>macOS</h3>
-            <p>macOS에서는 Homebrew를 통해 쉽게 설치할 수 있습니다. 터미널을 열고 다음 명령어를 입력하세요.</p>
-            <pre><code>brew install git</code></pre>
-            <p>또는 Xcode Command Line Tools를 설치하면 Git이 함께 설치됩니다.</p>
-            <pre><code>xcode-select --install</code></pre>
-
-            <h3>Linux (Debian/Ubuntu)</h3>
-            <p>터미널을 열고 다음 명령어를 입력하여 설치합니다.</p>
-            <pre><code>sudo apt update
-sudo apt install git</code></pre>
-
-            <h3>설치 확인</h3>
-            <p>설치 후 터미널 또는 명령 프롬프트에서 다음 명령어를 입력하여 Git이 올바르게 설치되었는지 확인합니다.</p>
-            <pre><code>git --version</code></pre>
-            <p>버전 정보가 출력되면 성공적으로 설치된 것입니다.</p>
-        </section>
-
-        <section id="basic-usage">
-            <h2>3. Git 기본 사용법</h2>
-            <p>Git을 사용하여 프로젝트를 관리하는 기본적인 명령어들을 소개합니다.</p>
-
-            <h3>3.1. 사용자 정보 설정</h3>
-            <p>Git 커밋에 사용될 사용자 이름과 이메일 주소를 설정합니다. 이 정보는 각 커밋에 기록됩니다.</p>
-            <pre><code>git config --global user.name "Your Name"
-git config --global user.email "your.email@example.com"</code></pre>
-            <p><code>--global</code> 옵션은 해당 컴퓨터의 모든 Git 저장소에 적용됩니다. 특정 저장소에만 적용하려면 <code>--global</code>을 제외하고 해당 저장소 디렉토리에서 명령어를 실행합니다.</p>
-
-            <h3>3.2. 새 Git 저장소 생성 (git init)</h3>
-            <p>기존 프로젝트 폴더를 Git 저장소로 만들거나, 새로운 빈 Git 저장소를 생성할 때 사용합니다.</p>
-            <pre><code>cd my_project_folder
-git init</code></pre>
-            <p>이 명령어를 실행하면 <code>.git</code>이라는 숨김 폴더가 생성되며, 이 폴더 안에 Git 저장소의 모든 정보가 저장됩니다.</p>
-
-            <h3>3.3. 원격 저장소 복제 (git clone)</h3>
-            <p>GitHub와 같은 원격 저장소에 있는 프로젝트를 로컬 컴퓨터로 가져올 때 사용합니다.</p>
-            <pre><code>git clone [원격 저장소 URL]</code></pre>
-            <p>예시:</p>
-            <pre><code>git clone https://github.com/user/repo.git</code></pre>
-
-            <h3>3.4. 변경 사항 추적 (git add)</h3>
-            <p>작업 디렉토리에서 수정한 파일들을 스테이징 영역(Staging Area)에 추가합니다. 스테이징 영역에 있는 파일들만 커밋에 포함됩니다.</p>
-            <ul>
-                <li>특정 파일 추가:</li>
-                <pre><code>git add [파일명]</code></pre>
-                <li>모든 변경된 파일 추가:</li>
-                <pre><code>git add .</code></pre>
-            </ul>
-
-            <h3>3.5. 변경 사항 기록 (git commit)</h3>
-            <p>스테이징 영역에 있는 변경 사항들을 로컬 저장소에 영구적으로 기록합니다. 각 커밋은 프로젝트의 특정 시점 스냅샷을 나타냅니다.</p>
-            <pre><code>git commit -m "커밋 메시지"</code></pre>
-            <p><code>-m</code> 옵션 뒤에 해당 커밋의 내용을 설명하는 메시지를 작성합니다. 좋은 커밋 메시지는 나중에 변경 이력을 파악하는 데 큰 도움이 됩니다.</p>
-
-            <h3>3.6. 저장소 상태 확인 (git status)</h3>
-            <p>현재 작업 디렉토리와 스테이징 영역의 상태를 보여줍니다. 어떤 파일이 수정되었는지, 스테이징되었는지 등을 확인할 수 있습니다.</p>
-            <pre><code>git status</code></pre>
-
-            <h3>3.7. 커밋 이력 확인 (git log)</h3>
-            <p>현재 브랜치의 커밋 이력을 시간 순서대로 보여줍니다.</p>
-            <pre><code>git log</code></pre>
-            <p>다양한 옵션을 통해 출력 형식을 조절할 수 있습니다 (예: <code>git log --oneline --graph</code>).</p>
-
-            <h3>3.8. 원격 저장소로 푸시 (git push)</h3>
-            <p>로컬 저장소의 커밋들을 원격 저장소로 업로드합니다. 주로 <code>origin</code>이라는 이름의 원격 저장소의 <code>main</code> 또는 <code>master</code> 브랜치로 푸시합니다.</p>
-            <pre><code>git push origin main</code></pre>
-            <p>최초 푸시 시에는 <code>-u</code> 옵션을 사용하여 로컬 브랜치와 원격 브랜치를 연결할 수 있습니다.</p>
-            <pre><code>git push -u origin main</code></pre>
-
-            <h3>3.9. 원격 저장소에서 풀 (git pull)</h3>
-            <p>원격 저장소의 변경 사항을 로컬 저장소로 가져와 병합합니다. 다른 개발자가 푸시한 내용을 내 로컬 작업에 반영할 때 사용합니다.</p>
-            <pre><code>git pull origin main</code></pre>
-        </section>
-
-        <footer>
-            <p style="text-align: center; margin-top: 50px; color: #777;">&copy; 2023 Git 소개 페이지</p>
-        </footer>
+<!-- ==================== Header ==================== -->
+<header>
+  <div class="nav-inner">
+    <div class="logo">
+      <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38
+        0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52
+        -.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87
+        2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95
+        0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12
+        0 0 .67-.21 2.2.82a7.63 7.63 0 014 0c1.53-1.04
+        2.2-.82 2.2-.82.44 1.1.16 1.92.08
+        2.12.51.56.82 1.27.82 2.15
+        0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54
+        1.48 0 1.07-.01 1.93-.01
+        2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      Git 가이드
     </div>
+    <nav>
+      <a href="#about">소개</a>
+      <a href="#install">설치</a>
+      <a href="#usage">사용법</a>
+      <a href="#workflow">워크플로</a>
+      <a href="#cheatsheet">명령어 표</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ==================== Hero ==================== -->
+<section class="hero">
+  <h1>버전 관리의 시작,&nbsp;<span>Git</span></h1>
+  <p>Git은 전 세계 개발자가 사용하는 분산 버전 관리 시스템입니다.<br>코드 변경 이력을 추적하고, 팀과 효율적으로 협업할 수 있습니다.</p>
+  <a href="#about" class="btn btn-primary">알아보기</a>
+  <a href="https://git-scm.com" target="_blank" class="btn btn-outline">공식 사이트 ↗</a>
+</section>
+
+<!-- ==================== About ==================== -->
+<section id="about">
+  <div class="container">
+    <h2 class="section-title">Git이란?</h2>
+    <p class="section-sub">2005년 리누스 토르발즈가 Linux 커널 개발을 위해 만든 오픈소스 분산 버전 관리 시스템(DVCS)입니다.</p>
+
+    <div class="about-grid">
+      <div class="card">
+        <div class="card-icon bg-orange">⚡</div>
+        <h3>빠른 속도</h3>
+        <p>거의 모든 작업이 로컬에서 이루어지므로 네트워크 지연 없이 빠르게 동작합니다.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon bg-blue">🔀</div>
+        <h3>브랜치 &amp; 머지</h3>
+        <p>가볍고 빠른 브랜치를 통해 기능 개발, 버그 수정 등을 독립적으로 진행할 수 있습니다.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon bg-green">🛡️</div>
+        <h3>데이터 무결성</h3>
+        <p>SHA-1 해시로 모든 데이터를 관리하여, 변경 이력이 손상되지 않도록 보장합니다.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon bg-purple">🌐</div>
+        <h3>분산 구조</h3>
+        <p>모든 개발자가 전체 저장소 사본을 갖고 있어 서버 장애에도 안전하게 작업할 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== Install ==================== -->
+<section id="install">
+  <div class="container">
+    <h2 class="section-title">설치 방법</h2>
+    <p class="section-sub">운영체제에 맞는 설치 방법을 확인하세요.</p>
+
+    <div class="install-tabs">
+      <button class="tab-btn active" data-tab="win">Windows</button>
+      <button class="tab-btn" data-tab="mac">macOS</button>
+      <button class="tab-btn" data-tab="linux">Linux</button>
+    </div>
+
+    <!-- Windows -->
+    <div id="tab-win" class="tab-panel active">
+      <div class="install-card">
+        <h3>🪟 Windows에서 설치하기</h3>
+        <ol>
+          <li><a href="https://git-scm.com/download/win" target="_blank">git-scm.com/download/win</a> 에서 설치 파일을 다운로드합니다.</li>
+          <li>다운로드된 <code>.exe</code> 파일을 실행하고, 안내에 따라 설치를 완료합니다.</li>
+          <li>설치 후 Git Bash 또는 명령 프롬프트에서 아래 명령어로 확인합니다.</li>
+        </ol>
+        <pre><code>git --version
+<span class="comment"># 예: git version 2.47.1.windows.1</span></code><button class="copy-btn" onclick="copyCode(this)">복사</button></pre>
+      </div>
+    </div>
+
+    <!-- macOS -->
+    <div id="tab-mac" class="tab-panel">
+      <div class="install-card">
+        <h3>🍎 macOS에서 설치하기</h3>
+        <ol>
+          <li>터미널을 열고 Xcode Command Line Tools를 설치합니다.</li>
+          <li>또는 <a href="https://brew.sh" target="_blank">Homebrew</a>를 이용해 설치할 수 있습니다.</li>
+        </ol>
+        <pre><code><span class="comment"># 방법 1: Xcode CLI</span>
+xcode-select --install
+
+<span class="comment"># 방법 2: Homebrew</span>
+brew install git
+
+<span class="comment"># 설치 확인</span>
+git --version</code><button class="copy-btn" onclick="copyCode(this)">복사</button></pre>
+      </div>
+    </div>
+
+    <!-- Linux -->
+    <div id="tab-linux" class="tab-panel">
+      <div class="install-card">
+        <h3>🐧 Linux에서 설치하기</h3>
+        <ol>
+          <li>배포판의 패키지 매니저를 사용해 설치합니다.</li>
+        </ol>
+        <pre><code><span class="comment"># Debian / Ubuntu</span>
+sudo apt update &amp;&amp; sudo apt install git
+
+<span class="comment"># Fedora</span>
+sudo dnf install git
+
+<span class="comment"># Arch Linux</span>
+sudo pacman -S git
+
+<span class="comment"># 설치 확인</span>
+git --version</code><button class="copy-btn" onclick="copyCode(this)">복사</button></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== Usage ==================== -->
+<section id="usage">
+  <div class="container">
+    <h2 class="section-title">주요 사용법</h2>
+    <p class="section-sub">Git을 처음 사용할 때 알아야 할 핵심 명령어를 단계별로 살펴봅니다.</p>
+
+    <!-- 초기 설정 -->
+    <div class="usage-block">
+      <h3>1. 초기 설정</h3>
+      <p>처음 Git을 설치한 뒤 사용자 이름과 이메일을 등록합니다.</p>
+      <pre><code>git config --global user.name "홍길동"
+git config --global user.email "hong@example.com"
+
+<span class="comment"># 설정 확인</span>
+git config --list</code><button class="copy-btn" onclick="copyCode(this)">복사</button></pre>
+    </div>
+
+    <!-- 저장소 생성 -->
+    <div class="usage-block">
+      <h3>2. 저장소 만들기</h3>
+      <p>새 프로젝트 폴더에서 Git 저장소를 초기화하거나, 원격 저장소를 복제합니다.</p>
+      <pre><code><span class="comment"># 새 저장소 초기화</span>
+git init
+
+<span class="comment"># 원격 저장소 복제</span>
+git clone https://github.com/user/repo.git</code><button class="copy-btn" onclick="copyCode(this)">복사</button></pre>
+    </div>
+
+    <!-- 스테이징 & 커밋 -->
+    <div class="usage-block">
+      <h3>3. 변경 사항 저장 (add &amp; commit)</h3>
+      <p>수정한 파일을 스테이징 영역에 올린 뒤, 커밋으로 기록합니다.</p>
+      <pre><code><span class="comment"># 파일 상태 확인</span>
+git status
+
+<span class="comment"># 특정 파일 스테이징</span>
+git add index.html
+
+<span class="comment"># 모든 변경 파일 스테이징</span>
+git add .
+
+<span class="comment"># 커밋 (메시지와 함께)</span>
+git commit -m "feat: 메인 페이지 추가"</code><button class="copy-btn" onclick="copyCode(this)">복사</button></pre>
+    </div>
+
+    <!-- 브랜치 -->
+    <div class="usage-block">
+      <h3>4. 브랜치 활용</h3>
+      <p>브랜치를 만들어 독립적으로 작업한 뒤 병합할 수 있습니다.</p>
+      <pre><code><span class="comment"># 브랜치 목록 확인</span>
+git branch
+
+<span class="comment"># 새 브랜치 생성 &amp; 이동</span>
+git switch -c feature/login
+
+<span class="comment"># main 브랜치로 돌아가기</span>
+git switch main
+
+<span class="comment"># 브랜치 병합</span>
+git merge feature/login
+
+<span class="comment"># 병합 완료 후 브랜치 삭제</span>
+git branch -d feature/login</code><button class="copy-btn" onclick="copyCode(this)">복사</button></pre>
+    </div>
+
+    <!-- 원격 저장소 -->
+    <div class="usage-block">
+      <h3>5. 원격 저장소 연동 (push &amp; pull)</h3>
+      <p>GitHub 등 원격 저장소와 동기화합니다.</p>
+      <pre><code><span class="comment"># 원격 저장소 추가</span>
+git remote add origin https://github.com/user/repo.git
+
+<span class="comment"># 원격에 푸시</span>
+git push -u origin main
+
+<span class="comment"># 원격 변경 사항 가져오기</span>
+git pull origin main</code><button class="copy-btn" onclick="copyCode(this)">복사</button></pre>
+    </div>
+
+    <!-- 로그 & 되돌리기 -->
+    <div class="usage-block">
+      <h3>6. 이력 확인 &amp; 되돌리기</h3>
+      <p>커밋 이력을 확인하고, 필요하면 이전 상태로 되돌릴 수 있습니다.</p>
+      <pre><code><span class="comment"># 커밋 로그 보기</span>
+git log --oneline --graph
+
+<span class="comment"># 마지막 커밋 메시지 수정</span>
+git commit --amend -m "fix: 오타 수정"
+
+<span class="comment"># 스테이징 취소</span>
+git restore --staged index.html
+
+<span class="comment"># 파일 변경 되돌리기</span>
+git restore index.html</code><button class="copy-btn" onclick="copyCode(this)">복사</button></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== Workflow ==================== -->
+<section id="workflow" style="background:#fff;">
+  <div class="container">
+    <h2 class="section-title">기본 워크플로</h2>
+    <p class="section-sub">일반적인 Git 작업 흐름을 한눈에 살펴봅니다.</p>
+
+    <div class="workflow">
+      <div class="wf-step">
+        <div class="wf-circle">1</div>
+        <strong>작업 디렉토리</strong>
+        <p>파일을 생성하거나 수정합니다.</p>
+      </div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">
+        <div class="wf-circle">2</div>
+        <strong>git add</strong>
+        <p>변경 파일을 스테이징 영역에 등록합니다.</p>
+      </div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">
+        <div class="wf-circle">3</div>
+        <strong>git commit</strong>
+        <p>스냅샷을 로컬 저장소에 기록합니다.</p>
+      </div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">
+        <div class="wf-circle">4</div>
+        <strong>git push</strong>
+        <p>커밋을 원격 저장소에 업로드합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== Cheatsheet ==================== -->
+<section id="cheatsheet">
+  <div class="container">
+    <h2 class="section-title">명령어 치트시트</h2>
+    <p class="section-sub">자주 사용하는 Git 명령어를 한곳에 모았습니다.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>분류</th>
+            <th>명령어</th>
+            <th>설명</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>설정</td><td><code>git config --global user.name "이름"</code></td><td>사용자 이름 설정</td></tr>
+          <tr><td>설정</td><td><code>git config --global user.email "이메일"</code></td><td>사용자 이메일 설정</td></tr>
+          <tr><td>생성</td><td><code>git init</code></td><td>새 저장소 초기화</td></tr>
+          <tr><td>생성</td><td><code>git clone &lt;url&gt;</code></td><td>원격 저장소 복제</td></tr>
+          <tr><td>스냅샷</td><td><code>git status</code></td><td>작업 디렉토리 상태 확인</td></tr>
+          <tr><td>스냅샷</td><td><code>git add &lt;file&gt;</code></td><td>파일을 스테이징 영역에 추가</td></tr>
+          <tr><td>스냅샷</td><td><code>git commit -m "msg"</code></td><td>스테이징된 변경 사항 커밋</td></tr>
+          <tr><td>브랜치</td><td><code>git branch</code></td><td>브랜치 목록 확인</td></tr>
+          <tr><td>브랜치</td><td><code>git switch -c &lt;name&gt;</code></td><td>새 브랜치 생성 후 이동</td></tr>
+          <tr><td>브랜치</td><td><code>git merge &lt;branch&gt;</code></td><td>현재 브랜치에 다른 브랜치 병합</td></tr>
+          <tr><td>원격</td><td><code>git remote add origin &lt;url&gt;</code></td><td>원격 저장소 연결</td></tr>
+          <tr><td>원격</td><td><code>git push</code></td><td>로컬 커밋을 원격에 업로드</td></tr>
+          <tr><td>원격</td><td><code>git pull</code></td><td>원격 변경 사항 가져오기 &amp; 병합</td></tr>
+          <tr><td>이력</td><td><code>git log --oneline</code></td><td>간략한 커밋 이력 확인</td></tr>
+          <tr><td>이력</td><td><code>git diff</code></td><td>변경 사항 비교</td></tr>
+          <tr><td>되돌리기</td><td><code>git restore &lt;file&gt;</code></td><td>파일을 마지막 커밋 상태로 복원</td></tr>
+          <tr><td>되돌리기</td><td><code>git reset --soft HEAD~1</code></td><td>마지막 커밋을 취소 (변경은 유지)</td></tr>
+          <tr><td>임시저장</td><td><code>git stash</code></td><td>작업 중인 변경 사항 임시 저장</td></tr>
+          <tr><td>임시저장</td><td><code>git stash pop</code></td><td>임시 저장한 변경 사항 복원</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== Footer ==================== -->
+<footer>
+  <p>© 2026 Git 가이드 · <a href="https://git-scm.com" target="_blank">git-scm.com</a> · GitHub Pages로 호스팅</p>
+</footer>
+
+<!-- Back to top -->
+<button id="topBtn" onclick="window.scrollTo({top:0})" title="맨 위로">↑</button>
+
+<!-- ==================== Script ==================== -->
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Copy code
+  function copyCode(button) {
+    const code = button.parentElement.querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      button.textContent = '복사됨!';
+      setTimeout(() => button.textContent = '복사', 1500);
+    });
+  }
+
+  // Back-to-top button
+  const topBtn = document.getElementById('topBtn');
+  window.addEventListener('scroll', () => {
+    topBtn.style.display = window.scrollY > 400 ? 'block' : 'none';
+  });
+
+  // Scroll-reveal animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.card, .usage-block, .install-card, .wf-step').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity .6s ease, transform .6s ease';
+    observer.observe(el);
+  });
+</script>
 </body>
 </html>
+
